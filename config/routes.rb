@@ -1,5 +1,6 @@
 A2V2::Application.routes.draw do
   get "welcome/index"
+  get 'maps/get_restaurant_details' => 'maps#get_restaurant_details'
   get 'maps/find_nearest_restaurants' => 'maps#find_nearest_restaurants'
 
   # The priority is based upon order of creation:

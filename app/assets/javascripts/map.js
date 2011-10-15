@@ -54,18 +54,14 @@ function init() {
         position: initialLocation,
         title:"Your location"
       });
-
-
     }
 
     function send_to_controller(lat, lng) {
       console.log("in send to controller");
       $.get("/maps/find_nearest_restaurants", { lat: lat, lng: lng }, function(data){
-        console.log(data);
-        
-        
-      }
-      );
+        var result = JSON.parse(data);
+        console.log(result);
+            });
     }
 }
       /*
