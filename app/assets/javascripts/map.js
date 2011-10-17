@@ -1,17 +1,15 @@
 function init() {
   var request;
-  var src = "http://maps.googleapis.com/maps/api/js?sensor=true";
+      src = "http://maps.googleapis.com/maps/api/js?sensor=true";
   var map;
   var image = new Image();
-  image.src = "restaurant-71.png"
+      image.src = "/assets/images/restaurant-71.png"
   var data;
   var initialLocation;
   var siberia = new google.maps.LatLng(60, 105);
   var newyork = new google.maps.LatLng(40.69847032728747, -73.9514422416687);
   var browserSupportFlag =  new Boolean();
   var mark;
-  var lat;
-  var lng;
 
   var myOptions = {
     zoom: 12,
@@ -20,25 +18,31 @@ function init() {
 
   map = new google.maps.Map(document.getElementById("map_canvas"), myOptions);
 
+
   if(navigator.geolocation) {
     browserSupportFlag = true;
     navigator.geolocation.getCurrentPosition(function(position) {
     initialLocation = new google.maps.LatLng(position.coords.latitude,position.coords.longitude);
-    console.log("Line 27:" + position.coords.latitude + ", " + position.coords.longitude);
-    map.setCenter(initialLocation);
+    console.log("Line 30: initial location " + position.coords.latitude + ", " + position.console.longitude);
+    map.setCenter(position.coords.latitude, position.coords.longitude);
+    console.log(map);
     marker(initialLocation, map);
 
-  }, function() {
-     handleNoGeolocation(browserSupportFlag);
-  });
-  } else {
+    });
+  }
+   else {
   browserSupportFlag = false;
   handleNoGeolocation(browserSupportFlag);
   }
+  /* place map */
+  map.setCenter(initialLocation);
+  marker(initialLocation, map);
+  // To add the marker to the map, call setMap();
+  mark.setMap(map);
 
   if(browserSupportFlag == true) {
-    console.log("Line 40:" + lat + ", " + lng);
-    send_to_controller(lat, lng);
+  //  console.log("Line49: browser support flag = t" + initialLocation.latitude + ", " + initialLocation.longitude);
+    send_to_controller(position.coords.latitude, position.coords.longitude);
   }
 
   function handleNoGeolocation(errorFlag) {
@@ -61,18 +65,16 @@ function init() {
   }
 
   function send_to_controller(lat, lng) {
-    console.log("in send to controller");
-    console.log(lat + ", " + lng);
+    console.log("Line 73: in send to controller" + lat + ", " + lng);
     $.get("/maps/find_nearest_restaurants", { lat: lat, lng: lng }, function(data){
-      console.log(data);
+      console.log("Line 75: Data returned: " + data);
       place_on_map(data);
     });
   }
 
   function place_on_map(data) {
-    console.log(data);
+    console.log("Line 81: in place on map:" +   data);
     var pos;
-    console.log(data.results.length);
     for(var i = 0; i < data.results.length; i++) {
       console.log(data.results[i].name);
       pos = new google.maps.LatLng(data.results[i].geometry.location.lat, data.results[i].geometry.lng);
@@ -82,7 +84,6 @@ function init() {
        map: map,
        title: data.results[i].name
      });
-     console.log(restMark);
      restMark.setMap(map);
 
     }
