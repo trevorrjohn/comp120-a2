@@ -3,11 +3,12 @@ var browserSupportFlag =  new Boolean();
 var gotLocation = new Boolean();
 var lat = null;
 var lng = null;
-//var image = new Image();
-  //  image.src = "/assets/restaurant-71.png";
+//var img = new Image();
+  //  img.src = '/assets/images/restaurant-71.png';
 var map;
 var restaurant_data = null;
 var marks = new Array();
+var infoWindow;
 
 function init() {
   gotLocation = false;
@@ -25,11 +26,25 @@ function setMark(latitude, longitude, name, index, ref){
   marks[index]= new google.maps.Marker({
     position: pos,
     map: map,
+    //icon: img,
     title: name
   });
   google.maps.event.addListener(marks[index], 'click', function(){
     $.get("/maps/get_restaurant_details", {ref: ref}, function(data){
-      console.log(data);
+      console.log(data.result.name);
+      var content = '<h1 id="firestHeading" class="firstHeading">' +
+                    data.result.name + '</h1>' +
+                    '<div id="info">' + data.result.formatted_address +
+                    '</br>' + data.result.formatted_phone_number + '</br>' +
+                    "Rating: " + data.result.rating + '</div>';
+      infoWindow = new google.maps.InfoWindow( {
+        content: content
+      });
+      infoWindow.open(map, marks[index]);
+
+
+
+
     });
   });
 }

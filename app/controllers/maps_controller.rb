@@ -19,7 +19,7 @@ class MapsController < ApplicationController
   end
 
   def get_restaurant_details
-    url = "https://maps.googleapis.com/maps/api/place/details/json?reference=#{ params[:id] }&sensor=true&key=AIzaSyA4Edo3tYUN_XVV4z4nrB9P_o8v-5X-4oI"
+    url = "https://maps.googleapis.com/maps/api/place/details/json?reference=#{ params[:ref] }&sensor=true&key=AIzaSyA4Edo3tYUN_XVV4z4nrB9P_o8v-5X-4oI"
     uri = URI.parse(url)
 
     http = Net::HTTP.new(uri.host, uri.port)
