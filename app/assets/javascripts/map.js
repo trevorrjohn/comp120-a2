@@ -1,5 +1,6 @@
 var initialLocation;
 var browserSupportFlag =  new Boolean();
+var gotLocation = new Boolean();
 var lat;
 var lng;
 var image = new Image();
@@ -7,17 +8,16 @@ var image = new Image();
 var map;
 
 function init() {
-  console.log("init");
+  gotLocation = false;
   initialize_map();
-  console.log("Lat:" + lat + " lng: "+ lng);
-
+  console.log(lat + "," + lng);
 }
 
 function initialize_map() {
   var siberia = new google.maps.LatLng(60, 105);
   var newyork = new google.maps.LatLng(40.69847032728747, -73.9514422416687);
   var myOptions = {
-    zoom: 6,
+    zoom: 10,
     mapTypeId: google.maps.MapTypeId.ROADMAP
   };
 
@@ -30,7 +30,9 @@ function initialize_map() {
       initialLocation = new google.maps.LatLng(position.coords.latitude,position.coords.longitude);
       lat = position.coords.latitude;
       lng = position.coords.longitude;
+      gotLocation = true;
       map.setCenter(initialLocation);
+      console.log(lat + ", " + lng);
     }, function() {
       handleNoGeolocation(browserSupportFlag);
     });
@@ -61,5 +63,7 @@ function initialize_map() {
       initialLocation = siberia;
     }
     map.setCenter(initialLocation);
+    //console.log(lat + ", " + lng);
+
   }
 }
