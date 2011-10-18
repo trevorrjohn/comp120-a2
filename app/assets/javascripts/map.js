@@ -1,18 +1,60 @@
 var initialLocation;
 var browserSupportFlag =  new Boolean();
 var gotLocation = new Boolean();
-var lat;
-var lng;
+var lat = null;
+var lng = null;
 var image = new Image();
     image.src = "/assets/restaurant-71.png";
 var map;
+var restaurant_data = null;
 
 function init() {
   gotLocation = false;
   initialize_map();
-  console.log(lat + "," + lng);
+  fillmap();
 }
 
+function pause(){
+
+}
+
+function fillmap(){
+    if(lat == null && lng == null){
+      setTimeout(fillmap, 50);
+    } else {
+      your_marker();
+      get_restaurant_data();
+    for(var i = 0; i < restaurant_data.results.length; i++)
+      {
+        console.log(restaurant_data.results[i].geometry.lat +", "+ restaurant_data.results[i].geometry.lng);
+      }
+    }
+  }
+
+
+function get_restaurant_data(){
+  $.get("/maps/find_nearest_restaurants", {lat: lat, lng: lng}, function(data){
+    restaurant_data = data;
+    console.log(restaurant_data.results.length);
+  });
+  wait();
+  function wait(){
+    if(restaurant_data == null){
+      setTimeout(wait, 50);
+    }
+  }
+}
+
+function your_marker(){
+  pos = new google.maps.LatLng(lat,lng);
+  mark = new google.maps.Marker({
+    position: pos,
+    map: map,
+    title: "Your location"
+  });
+  mark.setMap(map);
+  console.log(mark);
+}
 function initialize_map() {
   var siberia = new google.maps.LatLng(60, 105);
   var newyork = new google.maps.LatLng(40.69847032728747, -73.9514422416687);
