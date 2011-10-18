@@ -3,46 +3,53 @@ var browserSupportFlag =  new Boolean();
 var gotLocation = new Boolean();
 var lat = null;
 var lng = null;
-var image = new Image();
-    image.src = "/assets/restaurant-71.png";
+//var image = new Image();
+  //  image.src = "/assets/restaurant-71.png";
 var map;
 var restaurant_data = null;
+var marks = new Array();
 
 function init() {
   gotLocation = false;
   initialize_map();
-  fillmap();
 }
 
-function pause(){
-
-}
 
 function fillmap(){
-    if(lat == null && lng == null){
-      setTimeout(fillmap, 50);
-    } else {
-      your_marker();
-      get_restaurant_data();
-    for(var i = 0; i < restaurant_data.results.length; i++)
-      {
-        console.log(restaurant_data.results[i].geometry.lat +", "+ restaurant_data.results[i].geometry.lng);
-      }
-    }
-  }
+  your_marker();
+  get_restaurant_data();
+}
 
+function setMark(latitude, longitude, name, index, ref){
+  pos = new google.maps.LatLng(latitude, longitude);
+  marks[index]= new google.maps.Marker({
+    position: pos,
+    map: map,
+    title: name
+  });
+  google.maps.event.addListener(marks[index], 'click', function(){
+    $.get("/maps/get_restaurant_details", {ref: ref}, function(data){
+      console.log(data);
+    });
+  });
+}
 
 function get_restaurant_data(){
   $.get("/maps/find_nearest_restaurants", {lat: lat, lng: lng}, function(data){
-    restaurant_data = data;
-    console.log(restaurant_data.results.length);
+      restaurant_data = data;
+      console.log(data);
+      for(var index = 0; index < restaurant_data.results.length; index++) {
+          setMark(restaurant_data.results[index].geometry.location.lat,
+          restaurant_data.results[index].geometry.location.lng,
+          restaurant_data.results[index].name, index,
+          restaurant_data.results[index].reference);
+      }
+
+      google.maps.event.addListener(mark, 'click', function() {
+        map.setCenter(pos);
+      });
+
   });
-  wait();
-  function wait(){
-    if(restaurant_data == null){
-      setTimeout(wait, 50);
-    }
-  }
 }
 
 function your_marker(){
@@ -52,14 +59,13 @@ function your_marker(){
     map: map,
     title: "Your location"
   });
-  mark.setMap(map);
-  console.log(mark);
 }
+
 function initialize_map() {
   var siberia = new google.maps.LatLng(60, 105);
   var newyork = new google.maps.LatLng(40.69847032728747, -73.9514422416687);
   var myOptions = {
-    zoom: 10,
+    zoom: 13,
     mapTypeId: google.maps.MapTypeId.ROADMAP
   };
 
@@ -74,21 +80,9 @@ function initialize_map() {
       lng = position.coords.longitude;
       gotLocation = true;
       map.setCenter(initialLocation);
-      console.log(lat + ", " + lng);
+      fillmap();
     }, function() {
       handleNoGeolocation(browserSupportFlag);
-    });
-    // Try Google Gears Geolocation
-  } else if (google.gears) {
-    browserSupportFlag = true;
-    var geo = google.gears.factory.create('beta.geolocation');
-    geo.getCurrentPosition(function(position) {
-      initialLocation = new google.maps.LatLng(position.latitude,position.longitude);
-      lat = position.coords.latitude;
-      lng = position.coords.longitude;
-      map.setCenter(initialLocation);
-    }, function() {
-      handleNoGeoLocation(browserSupportFlag);
     });
     // Browser doesn't support Geolocation
   } else {

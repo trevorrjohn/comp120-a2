@@ -1,3 +1,4 @@
+/*
 function init() {
   var request;
       src = "http://maps.googleapis.com/maps/api/js?sensor=true";
@@ -39,7 +40,7 @@ function init() {
   handleNoGeolocation(browserSupportFlag);
   }
   console.log("lat:"+ lat +" lng:"+ lng);
-  /* place map */
+//   place map 
   map.setCenter(initialLocation);
   marker(initialLocation, map);
   // To add the marker to the map, call setMap();
@@ -93,4 +94,4 @@ function init() {
 
     }
   }
-}
+}*/
