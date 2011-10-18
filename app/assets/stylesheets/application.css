@@ -8,13 +8,13 @@
 
 h1 {
   text-align: center;
-  color: black;
+  color: #272A2B;
   font-family: "Helvetica";
   font-size: 14;
 }
 
-.info{
-  color: black;
+p {
+  color: #272A2B;
   text-align: left;
   font-family: "Helvetica";
   font-size: 10;

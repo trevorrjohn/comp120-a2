@@ -3,8 +3,7 @@ var browserSupportFlag =  new Boolean();
 var gotLocation = new Boolean();
 var lat = null;
 var lng = null;
-//var img = new Image();
-  //  img.src = '/assets/images/restaurant-71.png';
+var img = "/assets/restaurant-71.png";
 var map;
 var restaurant_data = null;
 var marks = new Array();
@@ -26,17 +25,16 @@ function setMark(latitude, longitude, name, index, ref){
   marks[index]= new google.maps.Marker({
     position: pos,
     map: map,
-    //icon: img,
+    icon: img,
     title: name
   });
   google.maps.event.addListener(marks[index], 'click', function(){
     $.get("/maps/get_restaurant_details", {ref: ref}, function(data){
       console.log(data.result.name);
-      var content = '<h1 id="firestHeading" class="firstHeading">' +
-                    data.result.name + '</h1>' +
-                    '<div id="info">' + data.result.formatted_address +
+      var content = '<h1>' + data.result.name + '</h1>' +
+                    '<p>' + data.result.formatted_address +
                     '</br>' + data.result.formatted_phone_number + '</br>' +
-                    "Rating: " + data.result.rating + '</div>';
+                    "Rating: " + data.result.rating + '</p>';
       infoWindow = new google.maps.InfoWindow( {
         content: content
       });
@@ -80,7 +78,7 @@ function initialize_map() {
   var siberia = new google.maps.LatLng(60, 105);
   var newyork = new google.maps.LatLng(40.69847032728747, -73.9514422416687);
   var myOptions = {
-    zoom: 13,
+    zoom: 14,
     mapTypeId: google.maps.MapTypeId.ROADMAP
   };
 
